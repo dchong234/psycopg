@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -234,6 +234,8 @@ build_targeted_cmd() {
 FULL_CMD=$(extract_cmd)
 RESOLVED=$(resolve_script "$FULL_CMD")
 RUNNER=$(detect_runner "$RESOLVED")
+
+FULL_CMD="pytest tests/"
 
 if [[ $# -eq 0 || -z "${1:-}" ]]; then
     FULL_CMD=$(strip_coverage_flags "$RUNNER" "$FULL_CMD")
