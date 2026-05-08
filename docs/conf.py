@@ -79,8 +79,8 @@ html_show_sourcelink = False
 html_theme_options = {
     "announcement": announcement,
     "sidebar_hide_name": False,
-    "light_logo": "psycopg.svg",
-    "dark_logo": "psycopg.svg",
+    "light_logo": "psycopg.png",
+    "dark_logo": "psycopg.png",
     "light_css_variables": {"admonition-font-size": "1rem"},
 }
 
