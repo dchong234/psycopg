@@ -172,6 +172,25 @@ class BaseCursor(Generic[ConnectionType, Row]):
         else:
             return None
 
+    def _normalize_result_index(self, index: int) -> int:
+        """
+        Validate and normalize a result-set index.
+
+        Accepts negative indices (counted from the end, like Python sequences).
+        Returns the equivalent non-negative index on success, or raises
+        `!IndexError` when the index is out of range for the available results.
+        """
+        n = len(self._results)
+        if n == 0:
+            raise IndexError(
+                f"result index {index} out of range: no results available"
+            )
+        if not -n <= index < n:
+            raise IndexError(
+                f"result index {index} out of range: {n} result(s) available"
+            )
+        return index if index >= 0 else n + index
+
     @property
     def statusmessage(self) -> str | None:
         """

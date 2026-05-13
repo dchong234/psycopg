@@ -212,28 +212,24 @@ class Cursor(BaseCursor["Connection[Any]", Row]):
 
     def set_result(self, index: int) -> Self:
         """
-        Move to a specific result set.
+        Move to a specific result set by index.
 
-        :arg index: index of the result to go to
+        :arg index: index of the result to select
         :type index: `!int`
 
-        More than one result will be available after executing calling
-        `executemany()` or `execute()` with more than one query.
+        More than one result will be available after calling `executemany()`
+        with `!returning=True`, or after calling `execute()` with more than
+        one statement in the query.
 
-        `!index` is 0-based and supports negative values, counting from the end,
-        the same way you can index items in a list.
+        `!index` is 0-based and supports negative values (counted from the
+        end), the same way you can index a Python list.
 
-        The function returns self, so that the result may be followed by a
-        fetch operation. See `results()` for details.
+        Raises `!IndexError` when the index is out of range.
+
+        The method returns `!self` so that calls can be chained directly with
+        a fetch operation. See `results()` for iterating all result sets.
         """
-        if not -len(self._results) <= index < len(self._results):
-            raise IndexError(
-                f"index {index} out of range: {len(self._results)} result(s) available"
-            )
-        if index < 0:
-            index = len(self._results) + index
-
-        self._select_current_result(index)
+        self._select_current_result(self._normalize_result_index(index))
         return self
 
     def fetchone(self) -> Row | None:
