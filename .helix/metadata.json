@@ -1,0 +1,13 @@
+[
+  {
+    "instance_id": "handshake",
+    "language": "handshake",
+    "docker_file": "handshake",
+    "run_script": "handshake",
+    "problem_statement": "handshake",
+    "problem_statement_variant": "handshake",
+    "hints": "handshake",
+    "FAIL_TO_PASS": ["handshake"],
+    "PASS_TO_PASS": ["handshake"]
+  }
+]
