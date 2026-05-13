@@ -1,0 +1,20 @@
+FROM python:3.12
+
+RUN apt-get update && apt-get install -y \
+    git \
+    ca-certificates \
+    postgresql \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip install --upgrade pip && \
+    pip install -e psycopg[test] psycopg_pool
+
+RUN service postgresql start && \
+    sleep 3 && \
+    su -c "psql -c \"ALTER USER postgres PASSWORD 'password';\"" postgres && \
+    su -c "psql -c \"CREATE DATABASE testdb OWNER postgres;\"" postgres || true
