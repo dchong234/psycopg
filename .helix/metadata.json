@@ -1,13 +1,28 @@
 [
   {
-    "instance_id": "handshake",
-    "language": "handshake",
-    "docker_file": "handshake",
-    "run_script": "handshake",
-    "problem_statement": "handshake",
-    "problem_statement_variant": "handshake",
-    "hints": "handshake",
-    "FAIL_TO_PASS": ["handshake"],
-    "PASS_TO_PASS": ["handshake"]
+    "instance_id": "5487dcff-aadd-457a-b0ca-09c844c951ee",
+    "language": "python",
+    "docker_file": ".helix/Dockerfile.helix",
+    "run_script": ".helix/run-tests-eval.sh",
+    "base_commit": "fdc18acf393f5e18c59ad47f47d56c148488910d",
+    "problem_statement": "When executing multiple SQL statements in a single query string (or calling executemany() with returning=True), a psycopg cursor accumulates multiple result sets internally. Currently the only way to navigate between them is to call nextset() repeatedly, which only moves forward one step at a time. There is no way to jump directly to an arbitrary result set by position. The cursor should expose a method that accepts an integer index (supporting both positive and negative indexing, following Python list conventions) and moves the cursor to that result set, raising IndexError when the index is out of range.",
+    "problem_statement_variant": "Users who execute multi-statement queries or executemany() with returning=True cannot jump directly to a specific result set; they are forced to iterate forward one result at a time via nextset(), which is cumbersome when they want to access, for example, the last or a middle result set directly.",
+    "hints": "Look at how the cursor stores multiple results in BaseCursor (see psycopg/psycopg/_cursor_base.py), specifically the _results list and the _iresult index. The existing nextset() and _select_current_result() methods show the pattern for switching between result sets. The new method should live on the Cursor and AsyncCursor classes (note the async cursor requires an async method to stay consistent with the rest of the async API).",
+    "FAIL_TO_PASS": [
+      "tests/test_set_result_sync.py",
+      "tests/test_set_result_async.py"
+    ],
+    "PASS_TO_PASS": [
+      "tests/test_cursor_common.py::test_execute_many_results",
+      "tests/test_cursor_common.py::test_init",
+      "tests/test_cursor_common.py::test_close",
+      "tests/test_cursor_common.py::test_execute_sql",
+      "tests/test_cursor_common.py::test_next",
+      "tests/test_cursor_common_async.py::test_execute_many_results",
+      "tests/test_cursor_common_async.py::test_init",
+      "tests/test_cursor_common_async.py::test_close",
+      "tests/test_cursor_common_async.py::test_execute_sql",
+      "tests/test_cursor_common_async.py::test_next"
+    ]
   }
 ]
