@@ -210,6 +210,36 @@ class Cursor(BaseCursor["Connection[Any]", Row]):
                 if not self.nextset():
                     break
 
+    def set_result(self, index: int) -> Self:
+        """
+        Jump directly to a specific result set by index.
+
+        :arg index: position of the result set to activate
+        :type index: `!int`
+
+        Multiple result sets accumulate after calling `executemany()` with
+        `!returning=True`, or after calling `execute()` with more than one
+        statement in the query string.
+
+        *index* is 0-based. Negative values count from the last result set
+        backwards, exactly like indexing a Python list. Raises `!IndexError`
+        when the index falls outside the available range.
+
+        Returns `!self` to allow chaining directly with a fetch call.
+        """
+        total = len(self._results)
+        if total == 0:
+            raise IndexError("set_result: no result sets are available")
+        if index < -total or index >= total:
+            raise IndexError(
+                f"set_result: index {index} is out of range"
+                f" (there are {total} result set(s))"
+            )
+        if index < 0:
+            index += total
+        self._select_current_result(index)
+        return self
+
     def fetchone(self) -> Row | None:
         """
         Return the next record from the current result set.
